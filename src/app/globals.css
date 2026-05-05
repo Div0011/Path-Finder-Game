@@ -20,7 +20,7 @@
   /* Node Colors */
   --node-start: var(--neon-teal);
   --node-end: var(--neon-yellow);
-  --node-wall: #1a233a;
+  --node-wall: #000000;
   --node-visited: rgba(110, 0, 255, 0.5);
   --node-path: var(--neon-yellow);
   --node-player: var(--neon-teal);
@@ -257,7 +257,7 @@ input[type=range]::-webkit-slider-runnable-track {
 .node {
   width: 25px;
   height: 25px;
-  background-color: rgba(220, 240, 255, 0.18); /* Lighter frosted board */
+  background-color: #ffffff;
   transition: all 0.3s ease;
   position: relative;
   display: flex;
@@ -272,7 +272,7 @@ input[type=range]::-webkit-slider-runnable-track {
 /* 3D specific node styles */
 .is-3d .node {
   transform: translateZ(4px);
-  background-color: rgba(220, 240, 255, 0.25); /* Even lighter in 3D */
+  background-color: #ffffff;
   border: 1px solid rgba(0, 229, 255, 0.3); /* Lighted edges */
   border-radius: 2px;
   box-shadow: 
@@ -288,14 +288,14 @@ input[type=range]::-webkit-slider-runnable-track {
 .is-3d .node-wall {
   transform: translateZ(10px);
   box-shadow: 
-    -1px 1px 0 #0d121f,
-    -2px 2px 0 #0d121f,
-    -3px 3px 0 #0d121f,
-    -4px 4px 0 #0d121f,
-    -5px 5px 0 #0d121f,
+    -1px 1px 0 #000000,
+    -2px 2px 0 #000000,
+    -3px 3px 0 #000000,
+    -4px 4px 0 #000000,
+    -5px 5px 0 #000000,
     -6px 6px 10px rgba(0,0,0,0.8);
-  background: linear-gradient(135deg, #2a3754, #1a233a);
-  border: 1px solid #3b4b6e;
+  background: linear-gradient(135deg, #222222, #000000);
+  border: 1px solid #333333;
 }
 
 .node-start {

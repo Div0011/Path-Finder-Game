@@ -76,6 +76,9 @@ export default function PathfindingVisualizer() {
   const [activeFact, setActiveFact] = useState(null);
   const [collectedFacts, setCollectedFacts] = useState([]);
 
+  // Draw Mode
+  const [placeMode, setPlaceMode] = useState('wall'); // 'wall' | 'start' | 'target'
+
   // Positions
   const [startPos, setStartPos] = useState({ row: 10, col: 5 });
   const [endPos, setEndPos] = useState({ row: 10, col: 29 });
@@ -99,6 +102,12 @@ export default function PathfindingVisualizer() {
   useEffect(() => {
     initializeGrid();
   }, []);
+
+  useEffect(() => {
+    if (grid.length > 0) {
+      initializeGrid(true);
+    }
+  }, [startPos, endPos]);
 
   const initializeGrid = useCallback((keepWalls = false) => {
     const initialGrid = getInitialGrid();
@@ -137,6 +146,20 @@ export default function PathfindingVisualizer() {
   // Handle Mouse Events for drawing walls
   const handleMouseDown = (row, col) => {
     if (isVisualizingRef.current || gameStatus === 'playing') return;
+    
+    if (placeMode === 'start' && mode === 'visualizer') {
+      if (row === endPos.row && col === endPos.col) return;
+      setStartPos({ row, col });
+      return;
+    }
+    
+    if (placeMode === 'target') {
+      if (mode === 'visualizer' && row === startPos.row && col === startPos.col) return;
+      if (mode === 'game' && row === playerPos.row && col === playerPos.col) return;
+      setEndPos({ row, col });
+      return;
+    }
+
     if (mode === 'visualizer' && ((row === startPos.row && col === startPos.col) || (row === endPos.row && col === endPos.col))) return;
     if (mode === 'game' && ((row === playerPos.row && col === playerPos.col) || (row === aiPos.row && col === aiPos.col) || (row === endPos.row && col === endPos.col))) return;
     
@@ -149,6 +172,8 @@ export default function PathfindingVisualizer() {
 
   const handleMouseEnter = (row, col) => {
     if (!mouseIsPressed || isVisualizingRef.current || gameStatus === 'playing') return;
+    if (placeMode !== 'wall') return;
+
     if (mode === 'visualizer' && ((row === startPos.row && col === startPos.col) || (row === endPos.row && col === endPos.col))) return;
     if (mode === 'game' && ((row === playerPos.row && col === playerPos.col) || (row === aiPos.row && col === aiPos.col) || (row === endPos.row && col === endPos.col))) return;
     
@@ -523,6 +548,11 @@ export default function PathfindingVisualizer() {
           >
             <Gamepad2 size={16} /> Game Mode
           </button>
+          <a href="/puzzle" style={{ textDecoration: 'none' }}>
+            <button className="btn" disabled={isVisualizingRef.current || gameStatus === 'playing'}>
+              <Layers size={16} /> 8-Puzzle
+            </button>
+          </a>
         </div>
       </motion.header>
 
@@ -587,6 +617,36 @@ export default function PathfindingVisualizer() {
               </label>
             </div>
           )}
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
+            <label style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>DRAW MODE</label>
+            <div style={{ display: 'flex', gap: '5px' }}>
+              <button 
+                className={`btn ${placeMode === 'wall' ? 'btn-active' : ''}`}
+                style={{ flex: 1, padding: '8px', justifyContent: 'center' }}
+                onClick={() => setPlaceMode('wall')}
+                disabled={isVisualizingRef.current || gameStatus === 'playing'}
+              >
+                Wall
+              </button>
+              <button 
+                className={`btn ${placeMode === 'start' ? 'btn-active' : ''}`}
+                style={{ flex: 1, padding: '8px', justifyContent: 'center' }}
+                onClick={() => setPlaceMode('start')}
+                disabled={isVisualizingRef.current || gameStatus === 'playing' || mode === 'game'}
+              >
+                Start
+              </button>
+              <button 
+                className={`btn ${placeMode === 'target' ? 'btn-active' : ''}`}
+                style={{ flex: 1, padding: '8px', justifyContent: 'center' }}
+                onClick={() => setPlaceMode('target')}
+                disabled={isVisualizingRef.current || gameStatus === 'playing'}
+              >
+                Target
+              </button>
+            </div>
+          </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
             {mode === 'visualizer' ? (
